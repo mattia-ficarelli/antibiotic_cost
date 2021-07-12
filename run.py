@@ -93,7 +93,11 @@ df6 = df5.sort_values(by='Total cost of Amoxicillin, Doxycycline Hyclate, Cefale
 #Plot 2 
 pd.options.plotting.backend = "plotly"
 fig_2 = px.bar(df6, x='Clinical Commissioning Group (CCG)', y= "Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£) per 1000 GP registered patients",
-title= "Total cost of Amoxicillin, Doxycycline Hyclate, and Cefalexin (£) per 1000 GP registered patients in %s" %current_year_str, color_discrete_sequence = ['#003087']*len(df6))
+title= "Total cost of Amoxicillin, Doxycycline Hyclate, and Cefalexin (£) per 1000 GP registered patients in %s" %current_year_str, 
+color="Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£) per 1000 GP registered patients",
+color_continuous_scale=px.colors.sequential.ice,
+hover_data={"Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£) per 1000 GP registered patients":':.2f'})
+
 fig_2.update_layout(
     {"plot_bgcolor": "rgba(0, 0, 0, 0)", "paper_bgcolor": "rgba(0, 0, 0, 0)"},
     autosize=True,
@@ -104,7 +108,7 @@ fig_2.update_layout(
 # Write out to file (.html)
 config = {"displayModeBar": False, "displaylogo": False}
 plotly_obj = plotly.offline.plot(
-    fig, fig_2, include_plotlyjs=False, output_type="div", config=config
+    fig_2, include_plotlyjs=False, output_type="div", config=config
 )
 with open("_includes/plotly_obj.html", "w") as file:
     file.write(plotly_obj)
