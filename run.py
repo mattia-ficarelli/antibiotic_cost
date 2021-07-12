@@ -48,22 +48,24 @@ all_amoxicillin_plot.round(2)
 
 pd.options.plotting.backend = "plotly"
 fig = px.bar(all_amoxicillin_plot, x='Date', y= ["Amoxicillin", "Doxycycline Hyclate", 'Cefalexin'],
+color_discrete_sequence=["#003087", "#0072CE", "#41B6E6"],
 labels={"value": "Cost (£)", "variable": "Antibiotic"},  
-title= "Total cost of Amoxicillin, Doxycycline Hyclate, and Cefalexin (£) per month")
+title= "Total cost of Amoxicillin, Doxycycline Hyclate, and Cefalexin (£) per month",)
 fig.update_layout(
     {"plot_bgcolor": "rgba(0, 0, 0, 0)", "paper_bgcolor": "rgba(0, 0, 0, 0)"},
     autosize=True,
     margin=dict(l=50, r=50, b=50, t=50, pad=4, autoexpand=True),
 )
 
+
 # Asthetics of the plot
-fig.update_layout(
-    {"plot_bgcolor": "rgba(0, 0, 0, 0)", "paper_bgcolor": "rgba(0, 0, 0, 0)"},
-    autosize=True,
-    margin=dict(l=50, r=50, b=50, t=50, pad=4, autoexpand=True),
+#fig.update_layout(
+    #{"plot_bgcolor": "rgba(0, 0, 0, 0)", "paper_bgcolor": "rgba(0, 0, 0, 0)"},
+    #autosize=True,
+    #margin=dict(l=50, r=50, b=50, t=50, pad=4, autoexpand=True),
     # height=1000,
     # hovermode="x",
-)
+#)
 
 # Add title and dynamic range selector to x axis
 #fig.update_xaxes(
