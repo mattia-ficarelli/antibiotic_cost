@@ -67,10 +67,10 @@ fig.update_layout(
 csv_url = "https://files.digital.nhs.uk/40/2232E5/gp-reg-pat-prac-all.csv"
 req = requests.get(csv_url)
 url_content = req.content
-csv_file = open('downloaded.csv', 'wb')
+csv_file = open('ccg_pop.csv', 'wb')
 csv_file.write(url_content)
 csv_file.close()
-df1 = pd.read_csv('downloaded.csv')
+df1 = pd.read_csv('ccg_pop.csv')
 CCG_pop = df1.groupby(['CCG_CODE']).sum().reset_index()
 CCG_pop.rename(columns={'CCG_CODE': 'CCG code', 'NUMBER_OF_PATIENTS': 'Number of patients registered at GP practices'}, inplace=True)
 #end
