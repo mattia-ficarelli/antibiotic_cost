@@ -39,7 +39,6 @@ flat_data_0501021L0
 join_1 = flat_data_0501013B0.join(flat_data_0501030I0, lsuffix='row_id', rsuffix='row_id')
 all_amoxicillin_merged = join_1.join(flat_data_0501021L0, lsuffix='row_id', rsuffix='row_id')
 all_amoxicillin_merged.fillna(0, inplace=True)
-#all_amoxicillin_merged['Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin(£)']= all_amoxicillin_merged.iloc[:, -3:].sum(axis=1)
 all_amoxicillin = all_amoxicillin_merged.reset_index()
 all_amoxicillin.rename(columns={'row_name': 'Clinical Commissioning Group (CCG)', 'row_id': 'ODS code', 'date': 'Date'}, inplace=True)
 all_amoxicillin_plot = all_amoxicillin.groupby(['Date']).sum()
@@ -56,30 +55,6 @@ fig.update_layout(
     autosize=True,
     margin=dict(l=50, r=50, b=50, t=50, pad=4, autoexpand=True),
 )
-
-
-# Asthetics of the plot
-#fig.update_layout(
-    #{"plot_bgcolor": "rgba(0, 0, 0, 0)", "paper_bgcolor": "rgba(0, 0, 0, 0)"},
-    #autosize=True,
-    #margin=dict(l=50, r=50, b=50, t=50, pad=4, autoexpand=True),
-    # height=1000,
-    # hovermode="x",
-#)
-
-# Add title and dynamic range selector to x axis
-#fig.update_xaxes(
-    #title_text="Date",
-    #rangeselector=dict(
-        #buttons=list(
-           # [
-                #dict(count=6, label="6m", step="month", stepmode="backward"),
-               # dict(count=1, label="1y", step="year", stepmode="backward"),
-                #dict(step="all"),
-            #]
-        #)
-   # ),
-#)
 
 # Write out to file (.html)
 config = {"displayModeBar": False, "displaylogo": False}
