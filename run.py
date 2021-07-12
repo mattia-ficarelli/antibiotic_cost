@@ -44,7 +44,7 @@ all_amoxicillin = all_amoxicillin_merged.reset_index()
 all_amoxicillin.rename(columns={'row_name': 'Clinical Commissioning Group (CCG)', 'row_id': 'ODS code', 'date': 'Date'}, inplace=True)
 all_amoxicillin_plot = all_amoxicillin.groupby(['Date']).sum()
 all_amoxicillin_plot = all_amoxicillin_plot.reset_index()
-
+all_amoxicillin_plot.round(2)
 
 pd.options.plotting.backend = "plotly"
 fig = px.bar(all_amoxicillin_plot, x='Date', y= ["Amoxicillin", "Doxycycline Hyclate", 'Cefalexin'],
