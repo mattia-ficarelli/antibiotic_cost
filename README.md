@@ -1,2 +1,4 @@
-# open-analytics-template
- Template for open analytics projects
+# open-analytics-antibiotic-cost
+ 
+Data sourced from: OpenPrescribing.net, EBM DataLab, University of Oxford, 2017
+
