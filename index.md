@@ -11,5 +11,5 @@ Template for end-to-end open source analytics: python, [plotly](https://plotly.c
 ## Plotly Chart
 
 {% include plotly_obj.html %}
-{% include plotly_obj_2.html %}
+
 <hr class="nhsuk-u-margin-top-0 nhsuk-u-margin-bottom-6">

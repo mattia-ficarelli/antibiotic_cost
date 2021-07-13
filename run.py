@@ -4,6 +4,7 @@ import requests
 from datetime import datetime
 import urllib.request
 import json
+import geojson
 import plotly
 import plotly.express as px
 
@@ -91,27 +92,27 @@ df6 = df5.sort_values(by='Total cost of Amoxicillin, Doxycycline Hyclate, Cefale
 #end
 
 #Plot 2 
-pd.options.plotting.backend = "plotly"
-fig_2 = px.bar(df6, y='Clinical Commissioning Group (CCG)', x= "Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£) per 1000 GP registered patients",
-log_x=True,
-labels={"Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£) per 1000 GP registered patients": "Cost (£) per 1000 GP registered patients"},
-title= "Total cost of Amoxicillin, Doxycycline Hyclate, and Cefalexin (£) per 1000 GP registered patients in %s" %current_year_str, 
-color="Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£) per 1000 GP registered patients",
-color_continuous_scale=px.colors.sequential.ice,
-hover_data={"Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£) per 1000 GP registered patients":':.2f'},
-width=1500, height=2000)
+url_ccg_geojson = "https://openprescribing.net/api/1.0/org_location/?org_type=ccg"
+response_ccg_geojson = urllib.request.urlopen(url_ccg_geojson)
+data_ccg_geojson = geojson.loads(response_ccg_geojson.read())
+data_ccg_geojson
 
-fig_2.update_layout(
-    {"plot_bgcolor": "rgba(0, 0, 0, 0)", "paper_bgcolor": "rgba(0, 0, 0, 0)"},
-    autosize=True,
-    margin=dict(l=50, r=50, b=50, t=50, pad=4, autoexpand=True),
-)
+fig_3 = px.choropleth(df6, geojson=data_ccg_geojson, 
+color="Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£) per 1000 GP registered patients", 
+color_continuous_scale=px.colors.sequential.ice,
+locations="CCG code", 
+featureidkey="properties.code",
+projection="mercator",
+title="Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£) per 1000 GP registered patients",  
+height=700)
+fig_3.update_geos(fitbounds="locations", visible=False)
+fig_3.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 #end
 
 # Write out to file (.html)
 config = {"displayModeBar": False, "displaylogo": False}
 plotly_obj = plotly.offline.plot(
-    fig, include_plotlyjs=False, output_type="div", config=config
+    fig_3, include_plotlyjs=False, output_type="div", config=config
 )
 with open("_includes/plotly_obj.html", "w") as file:
     file.write(plotly_obj)
