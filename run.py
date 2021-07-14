@@ -112,7 +112,7 @@ fig_3.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 # Write out to file (.html)
 config = {"displayModeBar": False, "displaylogo": False}
 plotly_obj = plotly.offline.plot(
-    fig_3, include_plotlyjs=False, output_type="div", config=config
+    fig, include_plotlyjs=False, output_type="div", config=config
 )
 with open("_includes/plotly_obj.html", "w") as file:
     file.write(plotly_obj)
