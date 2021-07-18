@@ -77,6 +77,8 @@ CCG_pop.rename(columns={'CCG_CODE': 'CCG code', 'NUMBER_OF_PATIENTS': 'Number of
 #end
 
 #Processing Plot 2 
+current_year = datetime.now().year
+current_year_str = str(current_year)
 all_antibiotics["Date"] = pd.to_datetime(all_antibiotics["Date"]).apply(lambda x: x.strftime("%Y"))
 all_antibiotics_current_year = all_antibiotics.loc[all_antibiotics['Date'] == current_year_str]
 df1 = all_antibiotics_current_year.groupby(["CCG code", "Clinical Commissioning Group (CCG)"]).sum()
@@ -90,9 +92,6 @@ df6 = df5.sort_values(by= "Cost (£) of Amoxicillin, Doxycycline Hyclate, and Ce
 #end
 
 #Plot 2 
-current_year = datetime.now().year
-current_year_str = str(current_year)
-
 with urlopen('https://openprescribing.net/api/1.0/org_location/?org_type=ccg') as response:
     data_ccg_geojson = json.load(response)
 
