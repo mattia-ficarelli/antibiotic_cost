@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" style="">
+<html lang="{{ site.lang | default: "en-US" }}">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -9,7 +9,7 @@
     />
     <meta name="description" content="" />
 
-    <title>Cost of the Antibiotics, Amoxicillin, Doxycycline Hyclate, and Cefalexin</title>
+    <title>"Cost of Amoxicillin, Doxycycline Hyclate and Caefalexin for Clinical Commissioning Groups (CCGs)"</title>
 
     <link href="https://www.nhs.uk/" rel="preconnect" />
     <link href="https://assets.nhs.uk/" rel="preconnect" crossorigin />
@@ -29,61 +29,61 @@
       crossorigin
     />
 
-    <link href="/nhsx-publications/assets/nhsuk.css" rel="stylesheet" />
+    <link href="{{ "/assets/nhsuk.css" | relative_url }}" rel="stylesheet" />
 
-    <script src="/nhsx-publications/assets/nhsuk.js" defer></script>
+    <script src="/open-health-statistics/assets/nhsuk.js" defer></script>
 
     <link
       rel="shortcut icon"
-      href="/nhsx-publications/assets/favicons/favicon.ico"
+      href="/open-health-statistics/assets/favicons/favicon.ico"
       type="image/x-icon"
     />
     <link
       rel="apple-touch-icon"
-      href="/nhsx-publications/assets/favicons/apple-touch-icon-180x180.png"
+      href="/open-health-statistics/assets/favicons/apple-touch-icon-180x180.png"
     />
     <link
       rel="mask-icon"
-      href="/nhsx-publications/assets/favicon.svg"
+      href="/open-health-statistics/assets/favicon.svg"
       color="#005eb8"
     />
     <link
       rel="icon"
       sizes="192x192"
-      href="/nhsx-publications/assets/favicon-192x192.png"
+      href="/open-health-statistics/assets/favicon-192x192.png"
     />
     <meta
       name="msapplication-TileImage"
-      content="/nhsx-publications/assets/mediumtile-144x144.png"
+      content="/open-health-statistics/assets/mediumtile-144x144.png"
     />
     <meta name="msapplication-TileColor" content="#005eb8" />
     <meta
       name="msapplication-square70x70logo"
-      content="/nhsx-publications/assets/smalltile-70x70.png"
+      content="/open-health-statistics/assets/smalltile-70x70.png"
     />
     <meta
       name="msapplication-square150x150logo"
-      content="/nhsx-publications/assets/mediumtile-150x150.png"
+      content="/open-health-statistics/assets/mediumtile-150x150.png"
     />
     <meta
       name="msapplication-wide310x150logo"
-      content="/nhsx-publications/assets/favicons/widetile-310x150.png"
+      content="/open-health-statistics/assets/favicons/widetile-310x150.png"
     />
     <meta
       name="msapplication-square310x310logo"
-      content="/nhsx-publications/assets/favicons/largetile-310x310.png"
+      content="/open-health-statistics/assets/favicons/largetile-310x310.png"
     />
 
     <meta property="og:url" content="https://www.nhsx.nhs.uk/" />
-    <meta property="og:title" content="NHSX Academic Publications" />
+    <meta property="og:title" content="Open Analytics Template" />
     <meta
       property="og:description"
-      content="Collecting statistics on academic publications with an NHSX (and NHS) affiliation."
+      content="Created using a template for end-to-end open source analytics"
     />
     <meta property="og:type" content="website" />
     <meta
       property="og:image"
-      content="/nhsx-publications/assets/logos/open-graph.png"
+      content="/open-health-statistics/assets/logos/open-graph.png"
     />
     <meta property="og:image:alt" content="NHSX" />
 
@@ -106,8 +106,8 @@
         <div class="nhsuk-header__logo">
           <a
             class="nhsuk-header__link nhsuk-header__link--service"
-            href="/nhsx-publications/"
-            aria-label="NHSX Academic Publications"
+            href="/"
+            aria-label="Cost of Amoxicillin, Doxycycline Hyclate and Caefalexin for Clinical Commissioning Groups (CCGs)"
           >
             <svg
               class="nhsuk-logo nhsuk-logo--white"
@@ -127,7 +127,7 @@
                 xlink:href=""
               ></image>
             </svg>
-            <span class="nhsuk-header__service-name">OPEN ANALYTICS </span>
+            <span class="nhsuk-header__service-name"> NHSX Analytics </span>
           </a>
         </div>
       </div>
@@ -150,7 +150,7 @@
               Developed by
               <a
                 class="nhsuk-footer__list-item-link"
-                href="https://www.nhsx.nhs.uk/"
+                href="{{ site.github.owner_url }}"
                 >NHSX</a
               >
             </li>
