@@ -3,11 +3,11 @@ import pandas as pd
 import requests
 from datetime import datetime
 import urllib.request
+from urllib.request import urlopen
 import json
-import geojson
+import folium
 import plotly
 import plotly.express as px
-
 
 # Generate Data
 
@@ -77,8 +77,6 @@ CCG_pop.rename(columns={'CCG_CODE': 'CCG code', 'NUMBER_OF_PATIENTS': 'Number of
 #end
 
 #Processing Plot 2 
-current_year = datetime.now().year
-current_year_str = str(current_year)
 all_antibiotics["Date"] = pd.to_datetime(all_antibiotics["Date"]).apply(lambda x: x.strftime("%Y"))
 all_antibiotics_current_year = all_antibiotics.loc[all_antibiotics['Date'] == current_year_str]
 df1 = all_antibiotics_current_year.groupby(["CCG code", "Clinical Commissioning Group (CCG)"]).sum()
@@ -86,28 +84,45 @@ df2 = df1.drop(columns=['Amoxicillin', 'Doxycycline Hyclate', 'Cefalexin'])
 df3 = df2.reset_index()
 df4 = df3.join(CCG_pop, rsuffix='CCG code')
 df5 = df4.drop(columns=['CCG codeCCG code'])
-df5["Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£) per 1000 GP registered patients"] = df5["Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£)"]/(df5["Number of patients registered at GP practices"]/1000)
+df5["Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients"] = df5["Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£)"]/(df5["Number of patients registered at GP practices"]/1000)
 df5.round(2)
-df6 = df5.sort_values(by='Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£) per 1000 GP registered patients' , ascending=True)
+df6 = df5.sort_values(by= "Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients" , ascending=True)
 #end
 
 #Plot 2 
-url_ccg_geojson = "https://openprescribing.net/api/1.0/org_location/?org_type=ccg"
-response_ccg_geojson = urllib.request.urlopen(url_ccg_geojson)
-data_ccg_geojson = geojson.loads(response_ccg_geojson.read())
-data_ccg_geojson
+current_year = datetime.now().year
+current_year_str = str(current_year)
 
-fig_3 = px.choropleth(df6, geojson=data_ccg_geojson, 
-color="Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£) per 1000 GP registered patients", 
-color_continuous_scale=px.colors.sequential.ice,
-locations="CCG code", 
-featureidkey="properties.code",
-projection="mercator",
-title="Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£) per 1000 GP registered patients",  
-height=700)
-fig_3.update_geos(fitbounds="locations", visible=False)
-fig_3.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-#end
+with urlopen('https://openprescribing.net/api/1.0/org_location/?org_type=ccg') as response:
+    data_ccg_geojson = json.load(response)
+
+loc = 'Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s' %current_year
+title_html = '''
+             <h3 align="center" style="font-size:16px"><b>{}</b></h3>
+             '''.format(loc)   
+
+fig_2 = folium.Map(
+    location=[53, 0.13],
+    tiles="cartodbpositron",
+    zoom_start=6.3,
+)
+
+folium.Choropleth(
+    geo_data=data_ccg_geojson,
+    name="choropleth",
+    data=df6,
+    columns=["CCG code", "Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients"],
+    key_on="feature.properties.code",
+    fill_color="YlGnBu",
+    fill_opacity=0.9,
+    line_opacity=0.5,
+    legend_name="Cost (£) per 1000 GP registered patients",
+).add_to(fig_2)
+
+folium.LayerControl().add_to(fig_2)
+fig_2.get_root().html.add_child(folium.Element(title_html))
+
+fig_2.save('_includes/map-with-title.html')
 
 # Write out to file (.html)
 config = {"displayModeBar": False, "displaylogo": False}
