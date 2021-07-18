@@ -93,18 +93,11 @@ df6 = df5.sort_values(by= "Cost (£) of Amoxicillin, Doxycycline Hyclate, and Ce
 #Plot 2 
 with urlopen('https://openprescribing.net/api/1.0/org_location/?org_type=ccg') as response:
     data_ccg_geojson = json.load(response)
-
-loc = 'Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s' %current_year
-title_html = '''
-             <h3 align="center" style="font-size:16px"><b>{}</b></h3>
-             '''.format(loc)   
-
 fig_2 = folium.Map(
     location=[53, 0.13],
     tiles="cartodbpositron",
     zoom_start=6.3,
 )
-
 folium.Choropleth(
     geo_data=data_ccg_geojson,
     name="choropleth",
@@ -117,11 +110,7 @@ folium.Choropleth(
     legend_name="Cost (£) per 1000 GP registered patients",
 ).add_to(fig_2)
 
-folium.LayerControl().add_to(fig_2)
-fig_2.get_root().html.add_child(folium.Element(title_html))
-fig_2.save('_includes/map-with-title.html')
-
-# Write out to file (.html)
+# fig_1 Write out to file (.html)
 config = {"displayModeBar": False, "displaylogo": False}
 plotly_obj = plotly.offline.plot(
     fig, include_plotlyjs=False, output_type="div", config=config
