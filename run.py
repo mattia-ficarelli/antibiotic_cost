@@ -55,8 +55,7 @@ all_antibiotics_plot = all_antibiotics_plot.round(1)
 pd.options.plotting.backend = "plotly"
 fig = px.bar(all_antibiotics_plot, x='Date', y= ["Amoxicillin", "Doxycycline Hyclate", 'Cefalexin'],
 color_discrete_sequence=["#003087", "#0072CE", "#41B6E6"],
-labels={"value": "Cost (£)", "variable": "Antibiotic"},  
-title= "Total cost of Amoxicillin, Doxycycline Hyclate, and Cefalexin (£) per month")
+labels={"value": "Cost (£)", "variable": "Antibiotic"})
 fig.update_layout(
     {"plot_bgcolor": "rgba(0, 0, 0, 0)", "paper_bgcolor": "rgba(0, 0, 0, 0)"},
     autosize=True,
@@ -120,7 +119,6 @@ folium.Choropleth(
 
 folium.LayerControl().add_to(fig_2)
 fig_2.get_root().html.add_child(folium.Element(title_html))
-
 fig_2.save('_includes/map-with-title.html')
 
 # Write out to file (.html)

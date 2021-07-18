@@ -1,10 +1,10 @@
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-# Cost of the Antibiotics Amoxicillin, Doxycycline Hyclate, and Cefalexin 
+# Open health statistics: The cost of antibiotics
 
 {% include update.html %}
 
-<hr class="nhsuk-u-margin-top-0 nhsuk-u-margin-bottom-6">
+<hr class="nhsuk-u-margin-top-0 nhsuk-u-margin-bottom-12">
 
 Developed using a template for end-to-end open source analytics: python, [plotly](https://plotly.com/python/), [github.io](https://pages.github.com/), and [github actions](https://github.com/features/actions).
 
@@ -16,4 +16,4 @@ Developed using a template for end-to-end open source analytics: python, [plotly
 
 {% include map-with-title.html %}
 
-<hr class="nhsuk-u-margin-top-0 nhsuk-u-margin-bottom-6">
+<hr class="nhsuk-u-margin-top-0 nhsuk-u-margin-bottom-12">
