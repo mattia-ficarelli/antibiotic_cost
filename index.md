@@ -14,6 +14,4 @@ Developed using a template for end-to-end open source analytics: python, [plotly
 
 ## Total (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients for the current year
 
-{% include map-with-title.html %}
-
 <hr class="nhsuk-u-margin-top-0 nhsuk-u-margin-bottom-6">
