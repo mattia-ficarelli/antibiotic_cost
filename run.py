@@ -184,7 +184,7 @@ folium.LayerControl().add_to(fig_2)
 
 ##Write out to file (.html) Plot 2
 
-fig_2.save("_includes/folium_obj.html", "w")
+fig_2.save("assets/folium_obj.html", "w")
 
 ##Write out to file (.html) Plot 2 end
 #Plot 2 end
