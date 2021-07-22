@@ -183,9 +183,7 @@ folium.LayerControl().add_to(fig_2)
 ##Visualization Plot 2 end
 
 ##Write out to file (.html) Plot 2
-
 fig_2.save("assets/folium/folium_obj.html", "w")
-
 ##Write out to file (.html) Plot 2 end
 #Plot 2 end
 
