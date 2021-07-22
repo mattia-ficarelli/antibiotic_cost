@@ -1,6 +1,6 @@
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-## Collecting and visualizing statistics on the prescribing cost of antibiotics
+#The prescribing cost of antibiotics
 
 [Antibiotics](https://www.nhs.uk/conditions/antibiotics/) are used to treat or prevent bacterial infections. There are many different types of antibiotics and some of the most prescribed inlcude:
 
