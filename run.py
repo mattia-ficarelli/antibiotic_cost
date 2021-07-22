@@ -94,7 +94,7 @@ url_content = req.content
 csv_file = open('assets/data/ccg_pop.csv', 'wb')
 csv_file.write(url_content)
 csv_file.close()
-df1 = pd.read_csv('ccg_pop.csv')
+df1 = pd.read_csv('assets/data/ccg_pop.csv')
 CCG_pop = df1.groupby(['CCG_CODE']).sum().reset_index()
 CCG_pop.rename(columns={'CCG_CODE': 'CCG code', 'NUMBER_OF_PATIENTS': 'Number of patients registered at GP practices'}, inplace=True)
 ##CCG population data end
