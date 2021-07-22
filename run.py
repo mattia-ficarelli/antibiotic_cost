@@ -162,7 +162,7 @@ folium.Choropleth(
     fill_color= "BuPu",
     fill_opacity=1,
     line_opacity=0.5,
-    legend_name="Cost (£) per 1000 GP registered patients in %s" %current_year_str,
+    legend_name="Prescribing cost (£) per 1000 GP registered population in %s" %current_year_str,
     highlight = True
 ).add_to(fig_2)
 style_function = lambda x: {'fillColor': '#ffffff', 
