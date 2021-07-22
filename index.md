@@ -34,7 +34,7 @@ Data sources: [NHS Digital](https://digital.nhs.uk/data-and-information/publicat
 
 ### Prescribing cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered population for the current year
 
-<iframe style="width:100%;height:min-height:1200px;" src="assets/folium_obj.html"></iframe>
+<iframe style="width:100%;height:100%" src="assets/folium_obj.html"></iframe>
 
 <div class="nhsuk-action-link">
   <a class="nhsuk-action-link__link" href="assets/data/cost_antibiotics_ccg_current_year.csv">

@@ -68,7 +68,7 @@ fig_1_data.to_csv("assets/data/cost_antibiotics_per_month.csv", index=False)
 pd.options.plotting.backend = "plotly"
 fig = px.bar(all_antibiotics_plot, x='Date', y= ["Amoxicillin", "Doxycycline Hyclate", 'Cefalexin'],
 color_discrete_sequence=["#003087", "#0072CE", "#41B6E6"],
-labels={"value": "Cost (£)", "variable": "Antibiotic"})
+labels={"value": "Cost (£)", "variable": "Antibiotic:"})
 fig.update_layout(
     {"plot_bgcolor": "rgba(0, 0, 0, 0)", "paper_bgcolor": "rgba(0, 0, 0, 0)"},
     font = dict(family = "Arial", size = 16),
