@@ -2,7 +2,7 @@
 
 ## The Prescribing Cost of Antibiotics
 
-[Antibiotics](https://www.nhs.uk/conditions/antibiotics/) are used to treat or prevent bacterial infections. There are many different types of antibiotics and some of the most prescribed inlcude:
+[Antibiotics](https://www.nhs.uk/conditions/antibiotics/) are used to treat or prevent bacterial infections. There are many different types of antibiotics and some of the most prescribed include:
 
   - [Amoxicillin](https://www.nhs.uk/medicines/amoxicillin/), used to treat skin infections, chest infections and urinary tract infections.
   - [Doxycycline Hyclate](https://www.nhs.uk/medicines/doxycycline/), used to treat a skin condition called rosacea, dental infections, and sexually transmitted infections (STIs).
@@ -10,7 +10,7 @@
 
 The overuse of antibiotics has led to the emergence of [antibiotic-resistant bacteria](https://www.nhs.uk/conditions/antibiotics/antibiotic-antimicrobial-resistance/), which cause infections that can be serious and challenging to treat as they are unaffected by many types of existing antibiotics. Antibiotic resistance is viewed as a critical public health challenge, with the NHS and health organisations across the world trying to reduce the use of antibiotics.
 
-This page tracks the prescribing cost of certain antibiotic types over time and by [Clinical Commissioning Group (CCG)](https://www.england.nhs.uk/ccgs/).
+This page tracks the prescribing cost of certain antibiotic types over time and by [Clinical Commissioning Groups (CCGs)](https://www.england.nhs.uk/ccgs/).
 
 Data sources: [NHS Digital](https://digital.nhs.uk/data-and-information/publications/statistical/patients-registered-at-a-gp-practice) and [OpenPrescribing.net](https://openprescribing.net/).
 
