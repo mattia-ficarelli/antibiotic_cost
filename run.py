@@ -87,6 +87,65 @@ with open("_includes/plotly_obj.html", "w") as file:
 #Plot 1 end
 
 #Plot 2 start
+##CCG population data 
+csv_url = "https://files.digital.nhs.uk/40/2232E5/gp-reg-pat-prac-all.csv"
+req = requests.get(csv_url)
+url_content = req.content
+csv_file = open('ccg_pop.csv', 'wb')
+csv_file.write(url_content)
+csv_file.close()
+df1 = pd.read_csv('ccg_pop.csv')
+CCG_pop = df1.groupby(['CCG_CODE']).sum().reset_index()
+CCG_pop.rename(columns={'CCG_CODE': 'CCG code', 'NUMBER_OF_PATIENTS': 'Number of patients registered at GP practices'}, inplace=True)
+##CCG population data end
+
+##GeoJSON download
+with urlopen('https://openprescribing.net/api/1.0/org_location/?org_type=ccg') as response:
+    data_ccg_geojson = json.load(response)
+##GeoJSON download end
+
+##Data processing for plot 2
+current_year = datetime.now().year
+current_year_str = str(current_year)
+all_antibiotics["Date"] = pd.to_datetime(all_antibiotics["Date"]).apply(lambda x: x.strftime("%Y"))
+all_antibiotics_current_year = all_antibiotics.loc[all_antibiotics['Date'] == current_year_str]
+df1 = all_antibiotics_current_year.groupby(["CCG code", "Clinical Commissioning Group (CCG)"]).sum()
+df2 = df1.drop(columns=['Amoxicillin', 'Doxycycline Hyclate', 'Cefalexin'])
+df3 = df2.reset_index()
+df4 = df3.join(CCG_pop, rsuffix='CCG code')
+df5 = df4.drop(columns=['CCG codeCCG code'])
+df5.rename(columns = {"Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£)": "Cost (£) of Amoxicillin, Doxycycline Hyclate,and Cefalexin in %s" %current_year_str}, inplace=True)
+df5["Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s" %current_year_str] = df5["Cost (£) of Amoxicillin, Doxycycline Hyclate,and Cefalexin in %s" %current_year_str]/(df5["Number of patients registered at GP practices"]/1000)
+df6 = df5.reset_index(drop = True)
+df6 = df6.round(2)
+df6.index.name = 'Unique ID'
+##Data processing for plot 2 end
+
+##GeoJSON processing for data on hover
+tooltip_text = { x: y for x, y in zip(df6['CCG code'], df6['Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s' %current_year_str])}
+tooltip_text_2 = { x: y for x, y in zip(df6['CCG code'], df6['Number of patients registered at GP practices'].apply(str))}
+for idx,x in enumerate(data_ccg_geojson['features']):
+    this_tooltip_text = tooltip_text[x['properties']['code']]
+    data_ccg_geojson['features'][idx]['properties']['Cost (£) per 1000 GP registered population'] = this_tooltip_text
+for idx,x in enumerate(data_ccg_geojson['features']):
+    this_tooltip_text_2 = tooltip_text_2[x['properties']['code']]
+    data_ccg_geojson['features'][idx]['properties']['GP registered population'] = this_tooltip_text_2
+def check_to_include(feature):
+    return (feature['geometry'] is not None)
+def transform(feature):
+    new_feature = copy.deepcopy(feature)
+    y = new_feature['properties']
+    del y['ons_code']
+    return feature
+data_ccg_geojson_2 = data_ccg_geojson.copy()
+data_ccg_geojson_2['features'] = [transform(x) for x in data_ccg_geojson['features'] if check_to_include(x)]
+##GeoJSON processing for data on hover end
+
+
+##Save data for plot 2 to csv
+fig_2_data = df6.copy()
+fig_2_data.to_csv("assets/data/cost_antibiotics_ccg_current_year.csv", index=False)
+##Save data end
 #Plot 2 end
 
 # Grab timestamp
