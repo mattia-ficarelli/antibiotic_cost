@@ -88,7 +88,7 @@ with open("_includes/plotly_obj.html", "w") as file:
 
 #Plot 2 start
 ##CCG population data 
-csv_url = "https://files.digital.nhs.uk/40/2232E5/gp-reg-pat-prac-all.csv"
+csv_url = "https://files.digital.nhs.uk/90/44C6CB/gp-reg-pat-prac-all.csv"
 req = requests.get(csv_url)
 url_content = req.content
 csv_file = open('assets/data/ccg_pop.csv', 'wb')
