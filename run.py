@@ -91,7 +91,7 @@ with open("_includes/plotly_obj.html", "w") as file:
 csv_url = "https://files.digital.nhs.uk/40/2232E5/gp-reg-pat-prac-all.csv"
 req = requests.get(csv_url)
 url_content = req.content
-csv_file = open('ccg_pop.csv', 'wb')
+csv_file = open('assets/data/ccg_pop.csv', 'wb')
 csv_file.write(url_content)
 csv_file.close()
 df1 = pd.read_csv('ccg_pop.csv')
