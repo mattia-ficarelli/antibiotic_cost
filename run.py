@@ -148,9 +148,9 @@ fig_2_data.to_csv("assets/data/cost_antibiotics_ccg_current_year.csv", index=Fal
 ##Save data end
 
 ##Visualization Plot 2
-frame = folium.Figure(width=700, height=500)
+frame = folium.Figure(width=900, height=700)
 fig_2 = folium.Map(
-    location=[53, 1],
+    location=[53, 0],,
     tiles="cartodbpositron",
     zoom_start=6).add_to(frame)
 folium.Choropleth(
