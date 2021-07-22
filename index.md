@@ -2,7 +2,19 @@
 
 # Open Source Healthcare Statistics
 
-## Collecting and visualizing statistics on the cost of antibiotics 
+## Collecting and visualizing statistics on the cost of antibiotics
+
+[Antibiotics](https://www.nhs.uk/conditions/antibiotics/) are used to treat or prevent bacterial infections. There are many different types of antibiotics and some of the most prescribed inlcude:
+
+  - [Amoxicillin](https://www.nhs.uk/medicines/amoxicillin/), used to treat skin infections, chest infections and urinary tract infections.
+  - [Doxycycline Hyclate](https://www.nhs.uk/medicines/doxycycline/), used to treat a skin condition called rosacea, dental infections, and sexually transmitted infections (STIs).
+  - [Cefalexin](https://www.nhs.uk/medicines/cefalexin/), used to treat pneumonia and other chest infections.
+
+The overuse of antibiotics has led to the emergence of [antibiotic-resistant bacteria](https://www.nhs.uk/conditions/antibiotics/antibiotic-antimicrobial-resistance/), which cause infections that can be serious and challenging to treat as they are unaffected by many types of existing antibiotics. Antibiotic resistance is viewed as a critical public health challenge, with the NHS and health organisations across the world are trying to reduce the use of antibiotics.
+
+This page tracks the prescribing cost of certain antibiotic types over time and by [Clinical Commissioning Group (CCG)](https://www.england.nhs.uk/ccgs/).
+
+Data sources: [NHS Digital](https://digital.nhs.uk/data-and-information/publications/statistical/patients-registered-at-a-gp-practice) and [OpenPrescribing.net](https://openprescribing.net/).
 
 {% include update.html %}
 
@@ -23,8 +35,6 @@
 </div>
 
 ### Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered population for the current year
-
-{% include folium_obj.html %}
 
 <div class="nhsuk-action-link">
   <a class="nhsuk-action-link__link" href="assets/data/cost_antibiotics_ccg_current_year.csv">
