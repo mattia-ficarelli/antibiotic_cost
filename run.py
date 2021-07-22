@@ -141,11 +141,51 @@ data_ccg_geojson_2 = data_ccg_geojson.copy()
 data_ccg_geojson_2['features'] = [transform(x) for x in data_ccg_geojson['features'] if check_to_include(x)]
 ##GeoJSON processing for data on hover end
 
-
 ##Save data for plot 2 to csv
 fig_2_data = df6.copy()
 fig_2_data.to_csv("assets/data/cost_antibiotics_ccg_current_year.csv", index=False)
 ##Save data end
+
+##Visualization Plot 2
+frame = folium.Figure(width=1050, height=750)
+fig_2 = folium.Map(
+    location=[53, 0.05],
+    tiles="cartodbpositron",
+    zoom_start=6.3).add_to(frame)
+folium.Choropleth(
+    geo_data=data_ccg_geojson,
+    name="choropleth",
+    data= df6,
+    columns=["CCG code", "Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s" %current_year_str],
+    key_on="feature.properties.code",
+    fill_color= "BuPu",
+    fill_opacity=1,
+    line_opacity=0.5,
+    legend_name="Cost (£) per 1000 GP registered patients in %s" %current_year_str,
+    highlight = True
+).add_to(fig_2)
+style_function = lambda x: {'fillColor': '#ffffff', 
+                            'color':'#000000', 
+                            'fillOpacity': 0.1, 
+                            'weight': 0.1}
+highlight_function = lambda x: {'fillColor': '#000000', 
+                                'color':'#000000', 
+                                'fillOpacity': 0.5, 
+                                'weight': 0.1}
+data_on_hover = folium.features.GeoJson(data = data_ccg_geojson_2, style_function=style_function, control=False, highlight_function=highlight_function, tooltip=folium.features.GeoJsonTooltip(
+    fields=['name', 'code', 'GP registered population', 'Cost (£) per 1000 GP registered population'],
+    aliases=['CCG name: ', 'CCG code: ', 'GP registered population: ', 'Cost (£) per 1000 GP registered population: '],
+    style=("background-color: white; color: #333333; font-family: arial; font-size: 12px; padding: 10px;")))
+fig_2.add_child(data_on_hover)
+fig_2.keep_in_front(data_on_hover)
+folium.LayerControl().add_to(fig_2)
+##Visualization Plot 2 end
+
+##Write out to file (.html) Plot 2
+
+fig_2.save("_includes/folium_obj.html", "w")
+
+##Write out to file (.html) Plot 2 end
 #Plot 2 end
 
 # Grab timestamp

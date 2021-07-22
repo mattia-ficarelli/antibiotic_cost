@@ -24,7 +24,7 @@
 
 ### Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered population for the current year
 
-{% include plotly_obj.html %}
+{% include folium_obj.html %}
 
 <div class="nhsuk-action-link">
   <a class="nhsuk-action-link__link" href="assets/data/cost_antibiotics_ccg_current_year.csv">
