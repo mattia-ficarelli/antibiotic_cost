@@ -71,6 +71,7 @@ color_discrete_sequence=["#003087", "#0072CE", "#41B6E6"],
 labels={"value": "Cost (£)", "variable": "Antibiotic"})
 fig.update_layout(
     {"plot_bgcolor": "rgba(0, 0, 0, 0)", "paper_bgcolor": "rgba(0, 0, 0, 0)"},
+    font = dict(family = "Arial", size = 16),
     autosize=True,
     margin=dict(l=50, r=50, b=50, t=50, pad=4, autoexpand=True),
 )
