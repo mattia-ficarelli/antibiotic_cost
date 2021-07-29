@@ -62,3 +62,5 @@ This page is built using end-to-end open source analytical tools including: [The
 </div>
 
 If you have any suggestions or questions, email: <a href="mailto:mattia.ficarelli@nhsx.nhs.uk">mattia.ficarelli@nhsx.nhs.uk</a>
+
+<hr class="nhsuk-u-margin-top-0 nhsuk-u-margin-bottom-6">
