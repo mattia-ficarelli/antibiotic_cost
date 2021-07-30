@@ -145,7 +145,7 @@ data_ccg_geojson_2['features'] = [transform(x) for x in data_ccg_geojson['featur
 ##Save data for plot 2 to csv
 fig_2_data = df6.copy()
 fig_2_data.to_csv("assets/data/cost_antibiotics_ccg_current_year.csv", index=False)
-##Save data end
+##Save data for plot 2 to end
 
 ##Visualization Plot 2
 frame = folium.Figure(width=900, height=700)
