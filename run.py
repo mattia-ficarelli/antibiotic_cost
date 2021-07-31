@@ -8,6 +8,7 @@ import pandas as pd
 import plotly
 import plotly.express as px
 from datetime import datetime
+from bs4 import BeautifulSoup
 
 #Plot 1 start
 ##API Query Start
@@ -89,7 +90,14 @@ with open("_includes/plotly_obj.html", "w") as file:
 
 #Plot 2 start
 ##CCG population data 
-csv_url = "https://files.digital.nhs.uk/90/44C6CB/gp-reg-pat-prac-all.csv"
+current_year = datetime.now().strftime('%Y')
+current_month = datetime.now().strftime('%B').lower()
+month_year_variable = current_month + '-' + current_year 
+url = "https://digital.nhs.uk/data-and-information/publications/statistical/patients-registered-at-a-gp-practice/%s" %month_year_variable 
+response = urllib.request.urlopen(url)
+soup = BeautifulSoup(response.read(), "lxml")
+data = soup.select_one("a[href*='gp-reg-pat-prac-all.csv']")
+csv_url = data['href']
 req = requests.get(csv_url)
 url_content = req.content
 csv_file = open('assets/data/ccg_pop.csv', 'wb')
