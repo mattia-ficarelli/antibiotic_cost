@@ -90,9 +90,7 @@ with open("_includes/plotly_obj.html", "w") as file:
 
 #Plot 2 start
 ##CCG population data 
-current_year = datetime.now().strftime('%Y')
-current_month = datetime.now().strftime('%B').lower()
-month_year_variable = current_month + '-' + current_year 
+month_year_variable = datetime.now().strftime('%B-%Y').lower()
 url = "https://digital.nhs.uk/data-and-information/publications/statistical/patients-registered-at-a-gp-practice/%s" %month_year_variable 
 response = urllib.request.urlopen(url)
 soup = BeautifulSoup(response.read(), "lxml")
