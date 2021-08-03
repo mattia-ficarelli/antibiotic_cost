@@ -8,6 +8,7 @@ import pandas as pd
 import plotly
 import plotly.express as px
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from bs4 import BeautifulSoup
 
 #Plot 1 start
@@ -102,10 +103,22 @@ if data != None:
     csv_file = open('assets/data/ccg_pop.csv', 'wb')
     csv_file.write(url_content)
     csv_file.close()
-else: 
-    df1 = pd.read_csv('assets/data/ccg_pop.csv')
-    CCG_pop = df1.groupby(['CCG_CODE']).sum().reset_index()
-    CCG_pop.rename(columns={'CCG_CODE': 'CCG code', 'NUMBER_OF_PATIENTS': 'Number of patients registered at GP practices'}, inplace=True)
+else:
+    last_month = datetime.now() - relativedelta(months=1)
+    last_month_year_variable = last_month.strftime('%B-%Y').lower()
+    url = "https://digital.nhs.uk/data-and-information/publications/statistical/patients-registered-at-a-gp-practice/%s" %last_month_year_variable
+    response = urllib.request.urlopen(url)
+    soup = BeautifulSoup(response.read(), "lxml")
+    data = soup.select_one("a[href*='gp-reg-pat-prac-all.csv']")
+    csv_url = data['href']
+    req = requests.get(csv_url)
+    url_content = req.content
+    csv_file = open('assets/data/ccg_pop.csv', 'wb')
+    csv_file.write(url_content)
+    csv_file.close()
+df1 = pd.read_csv('assets/data/ccg_pop.csv')
+CCG_pop = df1.groupby(['CCG_CODE']).sum().reset_index()
+CCG_pop.rename(columns={'CCG_CODE': 'CCG code', 'NUMBER_OF_PATIENTS': 'Number of patients registered at GP practices'}, inplace=True) 
 ##CCG population data end
 
 ##GeoJSON download
