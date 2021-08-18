@@ -208,6 +208,7 @@ fig_2.save("assets/folium/folium_obj.html", "w")
 ##Write out to file (.html) Plot 2 end
 #Plot 2 end
 
+
 # Grab timestamp
 data_updated = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
