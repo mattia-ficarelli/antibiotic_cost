@@ -6,6 +6,7 @@ import folium
 import json
 import copy
 import pandas as pd
+import plotly
 import plotly.express as px
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
