@@ -2,7 +2,6 @@ import urllib.request
 from urllib.request import urlopen
 from urllib import request as urlreq
 import requests
-import regex as re
 import folium
 import json
 import copy
