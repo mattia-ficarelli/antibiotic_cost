@@ -1,11 +1,12 @@
 import urllib.request
 from urllib.request import urlopen
+from urllib import request as urlreq
 import requests
+import regex as re
 import folium
 import json
 import copy
 import pandas as pd
-import plotly
 import plotly.express as px
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
@@ -139,28 +140,62 @@ df5 = df4.drop(columns=['CCG codeCCG code'])
 df5.rename(columns = {"Total cost of Amoxicillin, Doxycycline Hyclate, Cefalexin (£)": "Cost (£) of Amoxicillin, Doxycycline Hyclate,and Cefalexin in %s" %current_year_str}, inplace=True)
 df5["Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s" %current_year_str] = df5["Cost (£) of Amoxicillin, Doxycycline Hyclate,and Cefalexin in %s" %current_year_str]/(df5["Number of patients registered at GP practices"]/1000)
 df6 = df5.reset_index(drop = True)
-df6 = df6.round(2)
-df6.index.name = 'Unique ID'
+df7 = df6.rename(columns = {'CCG code': 'ODS CCG code'})
+df7 = df7.round(2)
+df7.index.name = 'Unique ID'
 ##Data processing for plot 2 end
 
+def ons_geoportal_file_download(search_url, url_start, string_filter):
+  url_2 = '/0/query?where=1%3D1&outFields=*&outSR=4326&f=json'
+  response = urlreq.urlopen(search_url)
+  soup = BeautifulSoup(response.read(), "lxml")
+  data_url = soup.find_all('a', href=re.compile(string_filter))[-1].get('href')
+  full_url = url_start + data_url + url_2
+  with urlopen(full_url) as response:
+      json_file = json.load(response)
+  return json_file
+
+search_url = "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/"
+url_start = "https://services1.arcgis.com"
+string_filter = "CCG_APR"
+ccg_code_map_json = ons_geoportal_file_download(search_url, url_start, string_filter)
+ccg_code_map_df = pd.json_normalize(ccg_code_map_json['features'])
+column_ods_code = ccg_code_map_json['fields'][1]['name'].lower()
+column_ons_code_1 = ccg_code_map_json['fields'][0]['name'].lower()
+ccg_code_map_df = ccg_code_map_df.iloc[:,:2]
+ccg_code_map_df.columns = ccg_code_map_df.columns.str.lower()
+ccg_code_map_df.rename(columns={'attributes.%s' %column_ons_code_1 :'ONS CCG code', 'attributes.%s' %column_ods_code: 'ODS CCG code'}, inplace=True)
+final_df = ccg_code_map_df.merge(df7, how='outer', on= 'ODS CCG code')
+
+github_url = 'https://raw.githubusercontent.com/nhs-pycom/coding_club_nhs_data_ingestion/main/ccg_shapefile.geojson'
+response = urlopen(github_url)
+data_ccg_geojson = json.loads(response.read())
+data_ccg_geojson
+
 ##GeoJSON processing for data on hover
-tooltip_text = { x: y for x, y in zip(df6['CCG code'], df6['Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s' %current_year_str])}
-tooltip_text_2 = { x: y for x, y in zip(df6['CCG code'], df6['Number of patients registered at GP practices'].apply(str))}
+tooltip_text = { x: y for x, y in zip(final_df['ONS CCG code'], final_df['Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s' %current_year_str])}
+tooltip_text_2 = { x: y for x, y in zip(final_df['ONS CCG code'], final_df['Number of patients registered at GP practices'].apply(str))}
+
 for idx,x in enumerate(data_ccg_geojson['features']):
-    this_tooltip_text = tooltip_text[x['properties']['code']]
+    this_tooltip_text = tooltip_text[x['properties']['CCG21CD']]
     data_ccg_geojson['features'][idx]['properties']['Cost (£) per 1000 GP registered population'] = this_tooltip_text
+
 for idx,x in enumerate(data_ccg_geojson['features']):
-    this_tooltip_text_2 = tooltip_text_2[x['properties']['code']]
+    this_tooltip_text_2 = tooltip_text_2[x['properties']['CCG21CD']]
     data_ccg_geojson['features'][idx]['properties']['GP registered population'] = this_tooltip_text_2
+
 def check_to_include(feature):
     return (feature['geometry'] is not None)
-def transform(feature):
-    new_feature = copy.deepcopy(feature)
-    y = new_feature['properties']
-    del y['ons_code']
-    return feature
+
+# def transform(feature):
+#     new_feature = copy.deepcopy(feature)
+#     y = new_feature['attributes']
+#     del y['ons_code']
+#     return feature
+
 data_ccg_geojson_2 = data_ccg_geojson.copy()
-data_ccg_geojson_2['features'] = [transform(x) for x in data_ccg_geojson['features'] if check_to_include(x)]
+data_ccg_geojson_2['features'] = [x for x in data_ccg_geojson['features'] if check_to_include(x)]
+data_ccg_geojson_2
 ##GeoJSON processing for data on hover end
 
 ##Save data for plot 2 to csv
@@ -169,17 +204,17 @@ fig_2_data.to_csv("assets/data/cost_antibiotics_ccg_current_year.csv", index=Fal
 ##Save data for plot 2 to end
 
 ##Visualization Plot 2
-frame = folium.Figure(width=900, height=700)
+frame = folium.Figure(width=700, height=500)
 fig_2 = folium.Map(
-    location=[53, 0],
+    location=[53, 1],
     tiles="cartodbpositron",
     zoom_start=6).add_to(frame)
 folium.Choropleth(
-    geo_data=data_ccg_geojson,
+    geo_data = data_ccg_geojson,
     name="choropleth",
-    data= df6,
-    columns=["CCG code", "Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s" %current_year_str],
-    key_on="feature.properties.code",
+    data= final_df,
+    columns=["ONS CCG code", "Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s" %current_year_str],
+    key_on="feature.properties.CCG21CD",
     fill_color= "BuPu",
     fill_opacity=1,
     line_opacity=0.5,
@@ -195,7 +230,7 @@ highlight_function = lambda x: {'fillColor': '#000000',
                                 'fillOpacity': 0.5, 
                                 'weight': 0.1}
 data_on_hover = folium.features.GeoJson(data = data_ccg_geojson_2, style_function=style_function, control=False, highlight_function=highlight_function, tooltip=folium.features.GeoJsonTooltip(
-    fields=['name', 'code', 'GP registered population', 'Cost (£) per 1000 GP registered population'],
+    fields=['CCG21NM', 'CCG21CD', 'GP registered population', 'Cost (£) per 1000 GP registered population'],
     aliases=['CCG name: ', 'CCG code: ', 'GP registered population: ', 'Cost (£) per 1000 GP registered population: '],
     style=("background-color: white; color: #333333; font-family: arial; font-size: 12px; padding: 10px;")))
 fig_2.add_child(data_on_hover)
