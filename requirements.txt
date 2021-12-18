@@ -5,3 +5,4 @@ folium==0.12.1
 beautifulsoup4==4.9.3
 lxml==4.6.3
 regex
+geopandas

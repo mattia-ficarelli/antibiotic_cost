@@ -2,13 +2,13 @@ import urllib.request
 from urllib.request import urlopen
 from urllib import request as urlreq
 import requests
+import regex as re
 import folium
 import json
-import regex as re
-import copy
 import pandas as pd
-import plotly
+import plotly 
 import plotly.express as px
+import geopandas as gpd
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from bs4 import BeautifulSoup
@@ -41,7 +41,6 @@ flat_data_0501021L0= pd.json_normalize(data_0501021L0)
 flat_data_0501021L0 = flat_data_0501021L0.groupby(['row_name', 'row_id', 'date']).sum()
 flat_data_0501021L0 = flat_data_0501021L0.drop(columns=['items', 'quantity'])
 flat_data_0501021L0.rename(columns={'actual_cost': 'Cefalexin'}, inplace=True)
-flat_data_0501021L0
 ##API Query End
 
 ##Data processing for plot 1
@@ -144,59 +143,97 @@ df6 = df5.reset_index(drop = True)
 df7 = df6.rename(columns = {'CCG code': 'ODS CCG code'})
 df7 = df7.round(2)
 df7.index.name = 'Unique ID'
+final_df = df7.copy()
 ##Data processing for plot 2 end
 
-def ons_geoportal_file_download(search_url, url_start, string_filter):
-  url_2 = '/0/query?where=1%3D1&outFields=*&outSR=4326&f=json'
+##Define function to download shapefiles/data from ONS Geoportal
+def geo_json_download(input_num):
+    full_url = url_start + data_url + '%s' %input_num  + url_end_base
+    with urlopen(full_url) as response:
+        geodf_map = gpd.read_file(response)
+    return geodf_map
+##Define function to download shapefiles/data from ONS Geoportal end
+
+##Ingest CCG boundary GeoJSON from ONS Geoportal
+current_year = datetime.now().strftime('%Y')
+last_year = str(datetime.now().year -1)
+url_start = "https://ons-inspire.esriuk.com"
+search_url = url_start + "/arcgis/rest/services/Health_Boundaries/"
+url_end_base = '/query?where=1%3D1&outFields=*&outSR=4326&f=json'
+string_filter_base = "Clinical_Commissioning_Groups_[A-Za-z]+_"
+try:
   response = urlreq.urlopen(search_url)
   soup = BeautifulSoup(response.read(), "lxml")
-  data_url = soup.find_all('a', href=re.compile(string_filter))[-1].get('href')
-  full_url = url_start + data_url + url_2
-  with urlopen(full_url) as response:
-      json_file = json.load(response)
-  return json_file
+  data_url = soup.find_all('a', href=re.compile(string_filter_base + current_year))
+  if not data_url:
+    data_url = soup.find_all('a', href=re.compile(string_filter_base + last_year))
+  data_url = data_url[-1].get('href')
+  try:
+    input_num = '/0'
+    df_map = geo_json_download(input_num)
+  except:
+    input_num = '/1'
+    df_map = geo_json_download(input_num)
+except:
+    print('HTTP error')
+##Ingest CCG boundary GeoJSON from ONS Geoportal end 
 
-search_url = "https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/"
-url_start = "https://services1.arcgis.com"
-string_filter = "CCG_APR"
-ccg_code_map_json = ons_geoportal_file_download(search_url, url_start, string_filter)
-ccg_code_map_df = pd.json_normalize(ccg_code_map_json['features'])
+##Ingest CCG ONS to ODS code mapping table from ONS Geoportal
+url_start_cde_map = "https://services1.arcgis.com"
+search_url_cde_map = url_start_cde_map + "/ESMARspQHYMw9BZ9/arcgis/rest/services/"
+string_filter_cde_map_base = "CCG_[A-Za-z]+_"
+string_filter_cde_map_end = '_EN_NC'
+url_2_cde_map = '/0/query?where=1%3D1&outFields=*&outSR=4326&f=json'
+try:
+  response_cde_map = urlreq.urlopen(search_url_cde_map)
+  soup_cde_map = BeautifulSoup(response_cde_map.read(), "lxml")
+  data_url_cde_map = soup_cde_map.find_all('a', href=re.compile(string_filter_cde_map_base + current_year + string_filter_cde_map_end))
+  if not data_url_cde_map:
+    data_url_cde_map = soup_cde_map.find_all('a', href=re.compile(string_filter_cde_map_base + last_year + string_filter_cde_map_end))  
+  data_url_cde_map = data_url_cde_map[-1].get('href')
+  full_url_cde_map = url_start_cde_map + data_url_cde_map + url_2_cde_map
+  with urlopen(full_url_cde_map) as response:
+    ccg_code_map_json = json.load(response)
+    ccg_code_map_df = pd.json_normalize(ccg_code_map_json['features'])
+except:
+    print('HTTP error')
+##Ingest CCG ONS to ODS code mapping table from ONS Geoportal end 
+
+##Prepare CCG geopandas dataframe
+column_mapping = {df_map.columns[0]: 'Index', df_map.columns[1]: 'ONS CCG code', df_map.columns[2]: 'CCG name'}
+df_map_1 = df_map.rename(columns=column_mapping)
+df_map_2 = df_map_1.set_index('Index')
+##Prepare CCG geopandas dataframe end 
+
+##Prepare ODS to ONS code mapping dataframe
+column_ons_code = ccg_code_map_json['fields'][0]['name'].lower()
 column_ods_code = ccg_code_map_json['fields'][1]['name'].lower()
-column_ons_code_1 = ccg_code_map_json['fields'][0]['name'].lower()
-ccg_code_map_df = ccg_code_map_df.iloc[:,:2]
-ccg_code_map_df.columns = ccg_code_map_df.columns.str.lower()
-ccg_code_map_df.rename(columns={'attributes.%s' %column_ons_code_1 :'ONS CCG code', 'attributes.%s' %column_ods_code: 'ODS CCG code'}, inplace=True)
-final_df = ccg_code_map_df.merge(df7, how='outer', on= 'ODS CCG code')
+ccg_code_map_df_1 = ccg_code_map_df.iloc[:,:2]
+ccg_code_map_df_1.columns = ccg_code_map_df_1.columns.str.lower()
+ccg_code_map_df_1.rename(columns={'attributes.%s' %column_ons_code :'ONS CCG code', 'attributes.%s' %column_ods_code: 'ODS CCG code'}, inplace=True)
+##Prepare ODS to ONS code mapping dataframe end 
 
-github_url = 'https://raw.githubusercontent.com/nhs-pycom/coding_club_nhs_data_ingestion/main/ccg_shapefile.geojson'
-response = urlopen(github_url)
-data_ccg_geojson = json.loads(response.read())
-data_ccg_geojson
+##Join geometery and code mapping table, select relevant columns and output formatted GeoJSON
+final_map_df = ccg_code_map_df_1.merge(df_map_2, how = 'outer', on = 'ONS CCG code')
+final_map_df = final_map_df.rename(columns  = {"ODS CCG code" : "code"})
+final_map_df_1 = final_map_df[["code", "CCG name", "geometry"]]
+gdf = gpd.GeoDataFrame(final_map_df_1)
+gdf.to_file("assets/data/ccg_geojson.geojson", driver="GeoJSON") 
+f = open("assets/data/ccg_geojson.geojson")
+data_ccg_geojson =  json.load(f)
+##Join geometery and code mapping table, select relevant columns and output formatted GeoJSON end 
 
 ##GeoJSON processing for data on hover
-tooltip_text = { x: y for x, y in zip(final_df['ONS CCG code'], final_df['Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s' %current_year_str])}
-tooltip_text_2 = { x: y for x, y in zip(final_df['ONS CCG code'], final_df['Number of patients registered at GP practices'].apply(str))}
+tooltip_text = { x: y for x, y in zip(final_df['ODS CCG code'], final_df['Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s' %current_year_str])}
+tooltip_text_2 = { x: y for x, y in zip(final_df['ODS CCG code'], final_df['Number of patients registered at GP practices'].apply(str))}
 
 for idx,x in enumerate(data_ccg_geojson['features']):
-    this_tooltip_text = tooltip_text[x['properties']['CCG21CD']]
+    this_tooltip_text = tooltip_text[x['properties']['code']]
     data_ccg_geojson['features'][idx]['properties']['Cost (£) per 1000 GP registered population'] = this_tooltip_text
 
 for idx,x in enumerate(data_ccg_geojson['features']):
-    this_tooltip_text_2 = tooltip_text_2[x['properties']['CCG21CD']]
+    this_tooltip_text_2 = tooltip_text_2[x['properties']['code']]
     data_ccg_geojson['features'][idx]['properties']['GP registered population'] = this_tooltip_text_2
-
-def check_to_include(feature):
-    return (feature['geometry'] is not None)
-
-# def transform(feature):
-#     new_feature = copy.deepcopy(feature)
-#     y = new_feature['attributes']
-#     del y['ons_code']
-#     return feature
-
-data_ccg_geojson_2 = data_ccg_geojson.copy()
-data_ccg_geojson_2['features'] = [x for x in data_ccg_geojson['features'] if check_to_include(x)]
-data_ccg_geojson_2
 ##GeoJSON processing for data on hover end
 
 ##Save data for plot 2 to csv
@@ -212,26 +249,26 @@ fig_2 = folium.Map(
     zoom_start=6).add_to(frame)
 folium.Choropleth(
     geo_data = data_ccg_geojson,
-    name="choropleth",
+   name="choropleth",
     data= final_df,
-    columns=["ONS CCG code", "Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s" %current_year_str],
-    key_on="feature.properties.CCG21CD",
+    columns=["ODS CCG code", "Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s" %current_year_str],
+    key_on="feature.properties.code",
     fill_color= "BuPu",
     fill_opacity=1,
     line_opacity=0.5,
-    legend_name="Prescribing cost (£) per 1000 GP registered population in %s" %current_year_str,
+   legend_name="Prescribing cost (£) per 1000 GP registered population in %s" %current_year_str,
     highlight = True
 ).add_to(fig_2)
 style_function = lambda x: {'fillColor': '#ffffff', 
                             'color':'#000000', 
-                            'fillOpacity': 0.1, 
+                           'fillOpacity': 0.1, 
                             'weight': 0.1}
 highlight_function = lambda x: {'fillColor': '#000000', 
                                 'color':'#000000', 
                                 'fillOpacity': 0.5, 
-                                'weight': 0.1}
-data_on_hover = folium.features.GeoJson(data = data_ccg_geojson_2, style_function=style_function, control=False, highlight_function=highlight_function, tooltip=folium.features.GeoJsonTooltip(
-    fields=['CCG21NM', 'CCG21CD', 'GP registered population', 'Cost (£) per 1000 GP registered population'],
+                                 'weight': 0.1}
+data_on_hover = folium.features.GeoJson(data = data_ccg_geojson, style_function=style_function, control=False, highlight_function=highlight_function, tooltip=folium.features.GeoJsonTooltip(
+    fields=['CCG name', 'code', 'GP registered population', 'Cost (£) per 1000 GP registered population'],
     aliases=['CCG name: ', 'CCG code: ', 'GP registered population: ', 'Cost (£) per 1000 GP registered population: '],
     style=("background-color: white; color: #333333; font-family: arial; font-size: 12px; padding: 10px;")))
 fig_2.add_child(data_on_hover)
