@@ -12,7 +12,7 @@ The overuse of antibiotics has led to the emergence of [antibiotic-resistant bac
 
 This page tracks the prescribing cost of certain antibiotic types over time and by [Clinical Commissioning Groups (CCGs)](https://www.england.nhs.uk/ccgs/).
 
-Data sources: [NHS Digital](https://digital.nhs.uk/data-and-information/publications/statistical/patients-registered-at-a-gp-practice) and [OpenPrescribing.net](https://openprescribing.net/).
+Data sources: [NHS Digital](https://digital.nhs.uk/data-and-information/publications/statistical/patients-registered-at-a-gp-practice), [Open Geography Portal](https://geoportal.statistics.gov.uk/) and [OpenPrescribing.net](https://openprescribing.net/).
 
 <hr class="nhsuk-u-margin-top-0 nhsuk-u-margin-bottom-6">
 
@@ -62,5 +62,6 @@ This page is built using end-to-end open source analytical tools including: [The
 </div>
 
 If you have any suggestions or questions, email: <a href="mailto:mattia.ficarelli@nhsx.nhs.uk">mattia.ficarelli@nhsx.nhs.uk</a>
+
 
 <hr class="nhsuk-u-margin-top-0 nhsuk-u-margin-bottom-6">
