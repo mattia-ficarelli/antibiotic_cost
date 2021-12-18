@@ -246,7 +246,7 @@ frame = folium.Figure(width=700, height=500)
 fig_2 = folium.Map(
     location=[53, 1],
     tiles="cartodbpositron",
-    zoom_start=7).add_to(frame)
+    zoom_start=6).add_to(frame)
 folium.Choropleth(
     geo_data = data_ccg_geojson,
    name="choropleth",
