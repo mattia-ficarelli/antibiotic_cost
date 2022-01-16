@@ -229,7 +229,7 @@ data_ccg_geojson =  json.load(f)
 ##Join geometery and code mapping table, select relevant columns and output formatted GeoJSON end 
 
 ##GeoJSON processing for data on hover
-tooltip_text = { x: y for x, y in zip(final_df['ODS CCG code'], final_df['Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s' %date_for_column])}
+tooltip_text = { x: y for x, y in zip(final_df['ODS CCG code'], final_df['Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s' %all_antibiotics['Date'].max()])}
 tooltip_text_2 = { x: y for x, y in zip(final_df['ODS CCG code'], final_df['Number of patients registered at GP practices'].apply(str))}
 
 for idx,x in enumerate(data_ccg_geojson['features']):
@@ -256,12 +256,12 @@ folium.Choropleth(
     geo_data = data_ccg_geojson,
    name="choropleth",
     data= final_df,
-    columns=["ODS CCG code", "Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s" %date_for_column],
+    columns=["ODS CCG code", "Cost (£) of Amoxicillin, Doxycycline Hyclate, and Cefalexin per 1000 GP registered patients in %s" %all_antibiotics['Date'].max()],
     key_on="feature.properties.code",
     fill_color= "BuPu",
     fill_opacity=1,
     line_opacity=0.5,
-   legend_name="Prescribing cost (£) per 1000 GP registered population in %s" %date_for_column,
+   legend_name="Prescribing cost (£) per 1000 GP registered population in %s" %all_antibiotics['Date'].max(),
     highlight = True
 ).add_to(fig_2)
 style_function = lambda x: {'fillColor': '#ffffff', 
