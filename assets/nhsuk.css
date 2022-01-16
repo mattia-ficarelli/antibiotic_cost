@@ -178,22 +178,6 @@ body {
   /* [4] */
 }
 
-/* ========================================================================== */
-
-pre {
-  background-color: #e3e8e9;
-  display: block;
-  font-family: monospace;
-  white-space: pre;
-  margin: 1em 1px;
-  padding: 10px;
-  overflow: auto;
-  border: 1px solid #d8dde0;
-  margin: 0px;
-}
-
-/* ========================================================================== */
-
 /* ==========================================================================
    ELEMENTS / #TABLES
    ========================================================================== */
@@ -3240,21 +3224,6 @@ b {
  * 6. Stops the heading from spanning the full width of the card.
  * 7. Removes padding top for the feature heading positioning.
  */
-
-.nhsuk-card-code {
-  margin-bottom: 40px;
-  background: #dad8d8;
-  border: 1px solid #d8dde0;
-  position: relative;
-  /* [1] */
-  width: 100%;
-}
-@media (min-width: 40.0625em) {
-  .nhsuk-card {
-    margin-bottom: 48px;
-  }
-}
-
 .nhsuk-card {
   margin-bottom: 40px;
   background: #ffffff;
@@ -7816,6 +7785,8 @@ b {
   color: #212b32;
   border: 1px solid #ffeb3b;
   padding-top: 0 !important;
+  text-align: justify;
+  text-justify: inter-word;
   /* [1] */
 }
 .nhsuk-warning-callout > *:first-child {
@@ -7885,5 +7856,44 @@ b {
     background: none;
     color: #212b32;
     top: 0;
+  }
+}
+
+.nhsuk-warning-disclaimer {
+  margin-bottom: 10px;
+  margin-top: 0px;
+  padding: 10px;
+  background-color: #ffeb3b;
+  color: #212b32;
+  text-align: justify;
+  vertical-align: middle;
+  text-justify: inter-word;
+  /* [1] */
+}
+.nhsuk-warning-disclaimer > *:first-child {
+  margin-top: 0;
+}
+.nhsuk-warning-disclaimer > *:last-child {
+  margin-bottom: 0;
+}
+@media (min-width: 40.0625em) {
+  .nhsuk-warning-disclaimer {
+    margin-bottom: 10px;
+  }
+}
+@media (min-width: 40.0625em) {
+  .nhsuk-warning-disclaimer {
+    margin-top: 0px;
+  }
+}
+@media (min-width: 40.0625em) {
+  .nhsuk-warning-disclaimer {
+    padding: 32px;
+  }
+}
+@media print {
+  .nhsuk-warning-disclaimer {
+    border: 1px solid #212b32;
+    page-break-inside: avoid;
   }
 }
